@@ -2,8 +2,8 @@ import streamlit as st
 import pandas as pd
 import networkx as nx
 from streamlit_echarts import st_echarts
-from semantic_network import preprocess_text
 from collections import Counter
+from semantic_network import preprocess_text
 
 def create_semantic_network(comments, min_weight=2, top_n=50, weight_multiplier=1):
     """创建语义网络"""
