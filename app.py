@@ -7,7 +7,6 @@ import jieba
 import re
 from itertools import combinations
 from semantic_network import preprocess_text
-import matplotlib.font_manager as fm
 
 # 设置页面配置
 st.set_page_config(page_title="电影评论语义网络分析", layout="wide")
@@ -51,8 +50,9 @@ def draw_network(G, edge_color='#f681c6', font_color='#2c3e50'):
     """绘制网络图"""
     plt.figure(figsize=(15, 15))
     
-    # 设置中文字体
-    plt.rcParams['font.sans-serif'] = ['SimHei', 'DejaVu Sans', 'Arial Unicode MS']
+    # 使用最基础的字体设置
+    plt.rcParams['font.family'] = 'sans-serif'
+    plt.rcParams['font.sans-serif'] = ['DejaVu Sans']  # DejaVu Sans 是 Linux 系统常见的支持中文的字体
     plt.rcParams['axes.unicode_minus'] = False
     
     # 获取节点位置
@@ -65,7 +65,7 @@ def draw_network(G, edge_color='#f681c6', font_color='#2c3e50'):
     nx.draw_networkx_nodes(G, pos, node_size=3000, node_color='white', 
                           edgecolors='black', linewidths=2)
     
-    # 绘制标签
+    # 绘制标签时不指定特定字体
     nx.draw_networkx_labels(G, pos, 
                           font_size=25,
                           font_weight='bold',
