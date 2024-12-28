@@ -50,26 +50,21 @@ def draw_network(G, edge_color='#f681c6', font_color='#2c3e50'):
     """绘制网络图"""
     plt.figure(figsize=(15, 15))
     
-    # 使用最基础的字体设置
-    plt.rcParams['font.family'] = 'sans-serif'
-    plt.rcParams['font.sans-serif'] = ['DejaVu Sans']  # DejaVu Sans 是 Linux 系统常见的支持中文的字体
-    plt.rcParams['axes.unicode_minus'] = False
-    
-    # 获取节点位置
+    # 不设置任何字体，使用系统默认
     pos = nx.spring_layout(G, k=1, iterations=50)
     
-    # 绘制边
-    nx.draw_networkx_edges(G, pos, edge_color=edge_color, width=2, alpha=0.5)
-    
-    # 绘制节点
-    nx.draw_networkx_nodes(G, pos, node_size=3000, node_color='white', 
-                          edgecolors='black', linewidths=2)
-    
-    # 绘制标签时不指定特定字体
-    nx.draw_networkx_labels(G, pos, 
-                          font_size=25,
-                          font_weight='bold',
-                          font_color=font_color)
+    nx.draw(G, pos,
+           node_color='white',
+           node_size=3000,
+           edge_color=edge_color,
+           width=2,
+           alpha=0.5,
+           with_labels=True,
+           font_size=25,
+           font_weight='bold',
+           font_color=font_color,
+           edgecolors='black',
+           linewidths=2)
     
     plt.axis('off')
     return plt.gcf()
