@@ -7,6 +7,7 @@ import jieba
 import re
 from itertools import combinations
 from semantic_network import preprocess_text
+import matplotlib.font_manager as fm
 
 # 设置页面配置
 st.set_page_config(page_title="电影评论语义网络分析", layout="wide")
@@ -48,6 +49,10 @@ def create_semantic_network(comments, min_weight, top_n, weight_multiplier):
 
 def draw_network(G, edge_color='#f681c6', font_color='#2c3e50'):
     """绘制网络图"""
+    # 在函数开始处添加字体设置
+    font_path = fm.findfont(fm.FontProperties(family='sans-serif'))
+    prop = fm.FontProperties(fname=font_path)
+    
     # 创建带有透明背景的图形
     fig = plt.figure(figsize=(20, 20), facecolor='none')
     
@@ -80,7 +85,7 @@ def draw_network(G, edge_color='#f681c6', font_color='#2c3e50'):
     
     # 绘制标签时使用通用字体设置
     nx.draw_networkx_labels(G, pos, 
-                          font_family='sans-serif',  # 改为使用系统字体
+                          font_properties=prop,
                           font_size=25,
                           font_weight='bold',
                           font_color=font_color)
