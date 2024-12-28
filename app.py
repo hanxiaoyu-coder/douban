@@ -49,49 +49,30 @@ def create_semantic_network(comments, min_weight, top_n, weight_multiplier):
 
 def draw_network(G, edge_color='#f681c6', font_color='#2c3e50'):
     """绘制网络图"""
-    # 在函数开始处添加字体设置
-    font_path = fm.findfont(fm.FontProperties(family='sans-serif'))
-    prop = fm.FontProperties(fname=font_path)
+    plt.figure(figsize=(15, 15))
     
-    # 创建带有透明背景的图形
-    fig = plt.figure(figsize=(20, 20), facecolor='none')
+    # 设置中文字体
+    plt.rcParams['font.sans-serif'] = ['SimHei', 'DejaVu Sans', 'Arial Unicode MS']
+    plt.rcParams['axes.unicode_minus'] = False
     
-    # 设置轴的背景透明
-    ax = plt.gca()
-    ax.set_facecolor('none')
-    
-    # 计算节点大小
-    degrees = dict(nx.degree(G))
-    node_size = [1 for _ in degrees.values()]
-    
-    # 计算边的权重
-    edge_weights = [G[u][v]['weight']/4 for u, v in G.edges()]
-    
-    # 设置布局
-    pos = nx.spring_layout(G, k=3, iterations=60)
-    
-    # 绘制节点
-    nx.draw_networkx_nodes(G, pos, node_size=node_size, 
-                          node_color='white', alpha=0)
+    # 获取节点位置
+    pos = nx.spring_layout(G, k=1, iterations=50)
     
     # 绘制边
-    nx.draw_networkx_edges(G, pos, width=edge_weights, 
-                          alpha=0.3,
-                          edge_color=edge_color)
+    nx.draw_networkx_edges(G, pos, edge_color=edge_color, width=2, alpha=0.5)
     
-    # 修改字体设置
-    plt.rcParams['font.sans-serif'] = ['SimHei', 'Arial Unicode MS', 'Microsoft YaHei']  # 添加多个备选字体
-    plt.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
+    # 绘制节点
+    nx.draw_networkx_nodes(G, pos, node_size=3000, node_color='white', 
+                          edgecolors='black', linewidths=2)
     
-    # 绘制标签时使用通用字体设置
+    # 绘制标签
     nx.draw_networkx_labels(G, pos, 
-                          font_properties=prop,
                           font_size=25,
                           font_weight='bold',
                           font_color=font_color)
     
     plt.axis('off')
-    return fig
+    return plt.gcf()
 
 # 加载数据
 @st.cache_data
