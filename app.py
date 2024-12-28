@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import networkx as nx
-import matplotlib.pyplot as plt
+from streamlit_echarts import st_echarts
 from collections import Counter
 import jieba
 import re
@@ -47,27 +47,46 @@ def create_semantic_network(comments, min_weight, top_n, weight_multiplier):
     return G
 
 def draw_network(G, edge_color='#f681c6', font_color='#2c3e50'):
-    """绘制网络图"""
-    plt.figure(figsize=(15, 15))
+    """使用 ECharts 绘制网络图"""
+    # 准备节点数据
+    nodes = [{"name": node, "symbolSize": 50} for node in G.nodes()]
     
-    # 不设置任何字体，使用系统默认
-    pos = nx.spring_layout(G, k=1, iterations=50)
+    # 准备边数据
+    edges = [{"source": source, "target": target, 
+              "lineStyle": {"color": edge_color, "width": G[source][target]['weight']}} 
+             for source, target in G.edges()]
     
-    nx.draw(G, pos,
-           node_color='white',
-           node_size=3000,
-           edge_color=edge_color,
-           width=2,
-           alpha=0.5,
-           with_labels=True,
-           font_size=25,
-           font_weight='bold',
-           font_color=font_color,
-           edgecolors='black',
-           linewidths=2)
+    # 配置 ECharts 选项
+    options = {
+        "title": {"text": "电影评论语义网络"},
+        "tooltip": {},
+        "animationDurationUpdate": 1500,
+        "animationEasingUpdate": "quinticInOut",
+        "series": [{
+            "type": "graph",
+            "layout": "force",
+            "data": nodes,
+            "links": edges,
+            "roam": True,
+            "label": {
+                "show": True,
+                "position": "right",
+                "color": font_color,
+                "fontSize": 16
+            },
+            "force": {
+                "repulsion": 1000,
+                "edgeLength": 200
+            },
+            "lineStyle": {
+                "opacity": 0.5,
+                "width": 2,
+            }
+        }]
+    }
     
-    plt.axis('off')
-    return plt.gcf()
+    # 显示图表
+    st_echarts(options=options, height="800px")
 
 # 加载数据
 @st.cache_data
@@ -168,10 +187,7 @@ def main():
     
     # 创建并显示网络图
     G = create_semantic_network(movie_comments, min_weight, top_n, weight_multiplier)
-    fig = draw_network(G, edge_color, font_color)
-    
-    # 显示图形
-    st.pyplot(fig)
+    draw_network(G, edge_color, font_color)
     
     # 显示网络统计信息
     st.sidebar.markdown("### 网络统计")
