@@ -99,6 +99,8 @@ def main():
         
         # 电影选择
         movies = sorted(df['movie'].unique().tolist())
+        movies.insert(0, "所有电影")  # 添加"所有电影"选项
+        
         selected_movie = st.sidebar.selectbox(
             "选择电影",
             movies,
@@ -111,7 +113,7 @@ def main():
         # 最小边权重：控制词语之间的最小共现次数，值越大，显示的连线越少
         min_weight = st.sidebar.slider(
             "最小边权重 (控制词语间的最小共现次数)", 
-            2, 50, 5
+            2, 70, 5
         )
         
         # Top N关键词：控制显示的词语数量，值越大，显示的词语越多
@@ -123,7 +125,7 @@ def main():
         # 边权重乘数：控制共现次数的计算权重，值越大，连线越明显
         weight_multiplier = st.sidebar.slider(
             "边权重乘数 (控制共现强度)", 
-            1, 50, 5
+            1, 50, 2
         )
         
         # 边的粗细缩放：控制连线的粗细程度，值越小，连线越细
@@ -144,9 +146,14 @@ def main():
             "#2c3e50"
         )
         
-        # 过滤选中电影的评论
-        movie_df = df[df['movie'] == selected_movie]
-        movie_comments = movie_df['content'].tolist()
+        # 根据选择获取评论
+        if selected_movie == "所有电影":
+            movie_comments = df['content'].tolist()
+            st.sidebar.markdown(f"### 当前显示: 所有电影评论的共现网络")
+        else:
+            movie_df = df[df['movie'] == selected_movie]
+            movie_comments = movie_df['content'].tolist()
+            st.sidebar.markdown(f"### 当前显示: {selected_movie}")
         
         if len(movie_comments) > 0:
             # 创建网络
