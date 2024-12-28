@@ -35,7 +35,7 @@ def create_semantic_network(comments, min_weight=2, top_n=50, weight_multiplier=
                     else:
                         G.add_edge(w1, w2, weight=weight_multiplier)
     
-    # 移除权重小于阈值的边
+    # 移除权重���于阈值的边
     edges_to_remove = [(u, v) for u, v, d in G.edges(data=True) if d['weight'] < min_weight]
     G.remove_edges_from(edges_to_remove)
     
@@ -94,13 +94,10 @@ def main():
     edge_color = st.sidebar.color_picker("边的颜色", "#f681c6")
     font_color = st.sidebar.color_picker("字体颜色", "#2c3e50")
     
-    # 上传文件
-    uploaded_file = st.file_uploader("上传豆瓣评论数据 (CSV)", type="csv")
-    
-    if uploaded_file is not None:
-        # 读取数据
-        df = pd.read_csv(uploaded_file)
-        movie_comments = df['comment'].tolist()
+    # 直接读取仓库中的文件
+    try:
+        df = pd.read_csv('douban_comments_20241226_1600.csv')  # 假设文件名是 comments.csv
+        movie_comments = df['content'].tolist()  # 假设列名是 'comment'
         
         # 创建网络
         G = create_semantic_network(movie_comments, min_weight, top_n, weight_multiplier)
@@ -112,6 +109,10 @@ def main():
         st.sidebar.markdown("### 网络统计")
         st.sidebar.markdown(f"节点数量: {G.number_of_nodes()}")
         st.sidebar.markdown(f"边的数量: {G.number_of_edges()}")
+        
+    except Exception as e:
+        st.error(f"读取文件时出错: {str(e)}")
+        st.write("请确保文件路径和列名正确")
 
 if __name__ == "__main__":
     main() 
