@@ -107,12 +107,42 @@ def main():
         
         # 侧边栏参数设置
         st.sidebar.title("参数设置")
-        min_weight = st.sidebar.slider("最小边权重", 1, 10, 2)
-        top_n = st.sidebar.slider("Top N 关键词", 10, 100, 50)
-        weight_multiplier = st.sidebar.slider("边权重乘数", 1, 5, 1)
-        edge_scale = st.sidebar.slider("边的粗细缩放", 0.05, 0.5, 0.1, 0.05)
-        edge_color = st.sidebar.color_picker("边的颜色", "#f681c6")
-        font_color = st.sidebar.color_picker("字体颜色", "#2c3e50")
+        
+        # 最小边权重：控制词语之间的最小共现次数，值越大，显示的连线越少
+        min_weight = st.sidebar.slider(
+            "最小边权重 (控制词语间的最小共现次数)", 
+            2, 20, 5
+        )
+        
+        # Top N关键词：控制显示的词语数量，值越大，显示的词语越多
+        top_n = st.sidebar.slider(
+            "Top N 关键词 (控制显示词语数量)", 
+            10, 100, 30
+        )
+        
+        # 边权重乘数：控制共现次数的计算权重，值越大，连线越明显
+        weight_multiplier = st.sidebar.slider(
+            "边权重乘数 (控制共现强度)", 
+            1, 3, 1
+        )
+        
+        # 边的粗细缩放：控制连线的粗细程度，值越小，连线越细
+        edge_scale = st.sidebar.slider(
+            "边的粗细缩放 (控制连线粗细)", 
+            0.01, 0.2, 0.05, 0.01
+        )
+        
+        # 边的颜色：控制连线的颜色
+        edge_color = st.sidebar.color_picker(
+            "边的颜色 (控制连线颜色)", 
+            "#f681c6"
+        )
+        
+        # 字体颜色：控制词语的显示颜色
+        font_color = st.sidebar.color_picker(
+            "字体颜色 (控制词语颜色)", 
+            "#2c3e50"
+        )
         
         # 过滤选中电影的评论
         movie_df = df[df['movie'] == selected_movie]
@@ -132,7 +162,7 @@ def main():
             st.sidebar.markdown(f"边的数量: {G.number_of_edges()}")
         else:
             st.error(f"未找到电影 '{selected_movie}' 的评论数据")
-        
+            
     except Exception as e:
         st.error(f"读取文件时出错: {str(e)}")
         st.write("请确保文件 'douban_comments_20241226_1600.csv' 存在于仓库中，且包含所需列")
