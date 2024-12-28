@@ -74,9 +74,13 @@ def draw_network(G, edge_color='#f681c6', font_color='#2c3e50'):
                           alpha=0.3,
                           edge_color=edge_color)
     
-    # 添加标签
+    # 修改字体设置
+    plt.rcParams['font.sans-serif'] = ['SimHei', 'Arial Unicode MS', 'Microsoft YaHei']  # 添加多个备选字体
+    plt.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
+    
+    # 绘制标签时使用通用字体设置
     nx.draw_networkx_labels(G, pos, 
-                          font_family='Microsoft YaHei',
+                          font_family='sans-serif',  # 改为使用系统字体
                           font_size=25,
                           font_weight='bold',
                           font_color=font_color)
